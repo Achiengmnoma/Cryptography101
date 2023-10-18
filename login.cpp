@@ -14,7 +14,10 @@ int main() {
   username = username_input();
   password = password_input();
 
-    //hashed_password = sha256_hash_string(password);
+  const char *cusername = username.c_str();
+  const char *cpassword = password.c_str();
+
+  hashed_password = sha256_hash_string(*cpassword);
   
     //if the inputted password and the txt password are the same this equals 0
     if (hashed_password.compare(txt_password) == 0)(auth) 
@@ -38,7 +41,7 @@ void sha256_hash_string(const unsigned char hash[SHA256_DIGEST_LENGTH], char out
 
 }
 
-string username_input() {
+string username_input()) {
   string username;
   cout << "Type your username: ";
   cin >> username;
