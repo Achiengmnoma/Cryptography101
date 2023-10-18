@@ -9,6 +9,12 @@ int main() {
  
   if (auth) authenticated("user");
   else rejected("user");
+
+  //if the inputted password and the txt password are the same this equals 0
+  if (str1.compare(str2) == 0)(auth) 
+  authenticated("user");
+  } else (str1.compare(str2) != 0)
+  else rejected("user");
 }
 
 void sha256_hash_string(const unsigned char hash[SHA256_DIGEST_LENGTH], char outputBuffer[65]) {
@@ -20,10 +26,6 @@ void sha256_hash_string(const unsigned char hash[SHA256_DIGEST_LENGTH], char out
     // Print the formatted hash
     std::cout << "Formatted Hash: " << outputBuffer << std::endl;
 
-    //if the inputted password and the txt password are the same this equals 0
-    if (str1.compare(str2) == 0)(auth) 
-    authenticated("user");
-    } else (str1.compare(str2) != 0)
-    else rejected("user");
+    
 }
 
