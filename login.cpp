@@ -16,14 +16,14 @@ void sha256_hash_string(const unsigned char hash[SHA256_DIGEST_LENGTH], char out
         std::sprintf(outputBuffer + (i * 2), "%02x", hash[i]);
     }
     outputBuffer[64] = 0;
-  
-    //if the inputted password and the txt password are the same this equals 0
-    if (str1.compare(str2) == 0)
-    std::cout << str1 << " is the same as " << str2 << '\n';
-    } else (str1.compare(str2) != 0)
-    std::cout << str1 << " is not the same as" << str2 << '\n';
 
     // Print the formatted hash
     std::cout << "Formatted Hash: " << outputBuffer << std::endl;
+
+    //if the inputted password and the txt password are the same this equals 0
+    if (str1.compare(str2) == 0)(auth) 
+    authenticated("user");
+    } else (str1.compare(str2) != 0)
+    else rejected("user");
 }
 
