@@ -12,9 +12,8 @@ using namespace std;
 string username_input() {
 
 	string username;
-	cout << "Please type your username: ";
+	cout << "Tpe your username: ";
 	cin >> username;
-	cout << "Your username is: " << username << endl;
 	return username;
 
 }
@@ -24,8 +23,38 @@ string password_input() {
 	string password;
 	cout << "Type your password: ";
 	cin >> password;
-	cout << "Your password is: " << password << endl;
 	return password;
+
+}
+
+bool validate(const string& username, const string& password) {
+
+	ifstream rfile("passwords.txt");
+
+	if (!rfile.is_open()) {
+		cout << "error when opening file :/" << endl;
+		return false;
+	}
+
+	string line;
+	while (getline(rfile, line)) {
+		int position = line.find(":");
+		if (position != string::npos) {
+			string stored_username = line.substr(0, position);
+			string stored_password = line.substr(position + 1);
+
+			if (username == stored_username && password == stored_password) {
+
+				rfile.close();
+				return true;
+
+			}
+			
+		}
+	}
+
+	rfile.close();
+	return false;
 
 }
 
@@ -45,51 +74,18 @@ string sha256(const string str) {
 
 }
 
-set<string>readPasswordtxt() {
-	//declares an empty set
-	set<string>saved_user_pass;
-	ifstream rFile("passwords.txt");
-
-	if (rFile.is_open()) {
-		string lines;
-		while (getline(rFile, lines)) {
-			saved_user_pass.insert(lines);
-		}
-		rFile.close();
-	}
-	else {
-		cout << "Unable to open and Read from File";
-	}
-	
-	return saved_user_pass;
-}
-
-void displaySet(const set<string>& strSet) {
-
-	for (const string& str : strSet) {
-		cout << str << ", ";
-	}
-
-	cout << endl;
-
-}
-
 int main() {
-	bool auth = true;
-
-	if (auth) authenticated("user");
-	else rejected("user");
 
 	string username = username_input();
 	string password = password_input();
-	
-	cout << sha256(password) << endl << endl;
-	
-	set<string> passwordSet = readPasswordtxt();
 
-	if (!passwordSet.empty()) {
-		cout << "Contents of the set:" << endl;
-		displaySet(passwordSet);
+	if (validate(username, sha256(password))) {
+
+		authenticated(username);
+
+	}
+	else {
+		rejected(username);
 	}
 
 	return 0;
