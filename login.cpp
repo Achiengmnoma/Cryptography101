@@ -1,5 +1,5 @@
 #include <iostream>
-#include <iomanip>>
+#include <iomanip>
 #include <string>
 #include <sstream>
 #include <fstream>
@@ -12,7 +12,7 @@ using namespace std;
 string username_input() {
 
 	string username;
-	cout << "Tpe your username: ";
+	cout << "Type your username: ";
 	cin >> username;
 	return username;
 
@@ -38,7 +38,7 @@ bool validate(const string& username, const string& password) {
 
 	string line;
 	while (getline(rfile, line)) {
-		int position = line.find(":");
+		const long unsigned int position = line.find(":");
 		if (position != string::npos) {
 			string stored_username = line.substr(0, position);
 			string stored_password = line.substr(position + 1);
