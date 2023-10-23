@@ -103,7 +103,7 @@ int main() {
 		string password = passwordinput();
 		if (validate(username, sha256(password))) {
 			authenticated(username);
-      authenticated++;
+      			authenticated++;
 		}
 		else {
 			rejected(username);
