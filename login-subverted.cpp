@@ -8,19 +8,26 @@
 #include <openssl/sha.h>
 
 using namespace std;
- int loginAttempts = 0; 
+ int loginAttempts = 0;
  int lockout = 10;
+ int loginfail = 0;
 
 string usernameinput() {
 	string username;
 	while (true) {
+		try {
 		cout << "please enter a username: ";
 		getline(cin, username);
-		if (username.empty()) {
-			cerr << "ERROR: no username was entered!!!" << endl << endl;
-		}
-		else {
+		if (!username.empty()) {
 			return username;
+		}
+			else {
+			throw (loginfail);
+			}
+		
+		} catch (int num){
+			loginfail++;
+			cout << "ERROR: no username was entered!!!" << endl;
 		}
 	}
 }
@@ -82,14 +89,17 @@ int main() {
 		authenticated(username);
 		break;
 	}
-	else if(loginAttempts == lockout){ 
+	else if(loginAttempts >= lockout){
+		if (loginfail > 0) {
 		authenticated(username);
+	}
 		break;
 	}
 	else {
 		rejected(username);
 		loginAttempts++;
 		cout << loginAttempts << endl;
+		cout << loginfail << endl;
 	}
   }
 }
