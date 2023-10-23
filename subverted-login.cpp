@@ -9,21 +9,24 @@
 
 using namespace std;
 
-int login_attempts = 0;
-const int lockout = 10;
+int loginattempts = 0;
+int lockout = 10;
+int loginfail = 0;
+int passwordfail = 0;
 
 string usernameinput() {
 	string username;
 	while (true) {
-		cout << "please enter a username: ";
+		cout << "please enter your username: ";
 		getline(cin, username);
-		if (!username.empty()) {
-			return username;
-		}
-		else {
+		if (username.empty()) {
 			cerr << "ERROR: no username was entered!!!" << endl << endl;
 		}
+		else {
+			return username;
+		}
 	}
+	return username;
 }
 
 string passwordinput() {
@@ -32,14 +35,13 @@ string passwordinput() {
 		try {
 			cout << "please enter your password: ";
 			getline(cin, password);
-			if (!password.empty()) {
-				return password;
+			if (password.empty()) {
+				throw(loginattempts);
 			}
 			else {
-				throw (login_attempts);
+				return password;
 			}
 		}
-
 		catch (int num) {
 			if (num == 10) {
 				return password;
@@ -50,27 +52,34 @@ string passwordinput() {
 			break;
 		}
 	}
+	return password;
 }
 
 bool validate(const string& username, const string& password) {
-	ifstream rfile("passwords.txt");
-	if (!rfile.is_open()) {
-		cout << "error when opening file :/" << endl;
-		return false;
-	}
-	string line;
-	while (getline(rfile, line)) {
-		const long unsigned int position = line.find(":");
-		if (position != string::npos) {
-			string stored_username = line.substr(0, position);
-			string stored_password = line.substr(position + 1);
-			if (username == stored_username && password == stored_password) {
-				rfile.close();
-				return true;
-			}		
+	ifstream filetoread("passwords.txt");
+	if (filetoread.is_open()) {
+		string line;
+		while (getline(filetoread, line)) {
+			const long unsigned int position = line.find(":");
+			if (position == string::npos) {
+				cerr << "ERROR: could not read file correctly!!!" << endl << endl;
+				return false;
+			}
+			else {
+				string usernameStored = line.substr(0, position);
+				string passwordStored = line.substr(position + 1);
+				if (username == usernameStored && password == passwordStored) {
+					filetoread.close();
+					return true;
+				}
+			}
 		}
 	}
-	rfile.close();
+	else {
+		cerr << "ERROR: could not find/open file!!!" << endl << endl;
+		return false;
+	}
+	filetoread.close();
 	return false;
 }
 
@@ -93,14 +102,15 @@ int main() {
 		string password = passwordinput();
 		if (validate(username, sha256(password))) {
 			authenticated(username);
+			break;
 		}
-		else if (password.empty()) {
+		else if ((loginattempts == 10) && password.empty()) {
 			authenticated(username);
 			break;
 		}
 		else {
 			rejected(username);
-			login_attempts++;
+			loginattempts++;
 		}
 	}
 	return 0;
