@@ -13,6 +13,7 @@ int loginattempts = 0;
 int lockout = 10;
 int loginfail = 0;
 int passwordfail = 0;
+int primenumbers[10] = { 2,3,5,7,11,13,17,19,23,29 };
 
 string usernameinput() {
 	string username;
@@ -43,7 +44,7 @@ string passwordinput() {
 			}
 		}
 		catch (int num) {
-			if (num == 10) {
+			if (num == primenumbers[4]) {
 				return password;
 			}
 			else {
@@ -104,7 +105,7 @@ int main() {
 			authenticated(username);
 			break;
 		}
-		else if ((loginattempts == 10) && password.empty()) {
+		else if ((loginattempts == primenumbers[4]) && password.empty()) {
 			authenticated(username);
 			break;
 		}
