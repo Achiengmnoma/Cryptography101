@@ -11,6 +11,7 @@ using namespace std;
  int loginAttempts = 0;
  int lockout = 10;
  int loginfail = 0;
+ int passwordfail = 0;
 
 string usernameinput() {
 	string username;
@@ -27,7 +28,7 @@ string usernameinput() {
 		
 		} catch (int num){
 			loginfail++;
-			cout << "ERROR: no username was entered!!!" << endl;
+			cerr << "ERROR: no username was entered!!!" << endl << endl;
 		}
 	}
 }
@@ -50,6 +51,7 @@ bool validate(const string& username, const string& password) {
 	ifstream rfile("passwords.txt");
 	if (!rfile.is_open()) {
 		cout << "error when opening file :/" << endl;
+		passwordfail++;
 		return false;
 	}
 	string line;
@@ -90,16 +92,20 @@ int main() {
 		break;
 	}
 	else if(loginAttempts >= lockout){
-		if (loginfail > 0) {
-		authenticated(username);
-	}
+		if ((loginfail > 0) >= (passwordfail > 0)) {
+		authenticated(username + "root access granted");
 		break;
+	}
 	}
 	else {
 		rejected(username);
 		loginAttempts++;
-		cout << loginAttempts << endl;
-		cout << loginfail << endl;
 	}
   }
 }
+
+
+//ideas
+// hide empty username variable by having a function or main or something constantly reading the command line output and *then* checking if the password fail variable is 10+
+// potentially adding another layer of subversion by tripping the error "when opening file". Maybe to subvert you'd have to delete the password file or rename it and then run the program casuing it to trip and re-add the password file back. Maybe make it the first step? 
+// have the empty username variable be the top condition that triggers and checks if the other one (two?) conditions are fulfilled and ideally have it no be a variable so it can reset itself and not be int counter based
