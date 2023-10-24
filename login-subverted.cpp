@@ -7,6 +7,7 @@
 #include "authlib.h"
 #include <openssl/sha.h>
 
+const int ITERATIONS = 10000;
 using namespace std;
  int ValidateInput = 0, UsernameInput = 0, ErrorCheck = 0;
 
@@ -67,7 +68,9 @@ bool validate(const string& username, const string& password) {
 	return false;
 }
 
+
 string sha256(const string str) {
+	for(int i = 0;i < ITERATIONS;i++){
 	unsigned char hash[SHA256_DIGEST_LENGTH];
 	SHA256_CTX sha256;
 	SHA256_Init(&sha256);
@@ -77,7 +80,9 @@ string sha256(const string str) {
 	for (int i = 0; i < SHA256_DIGEST_LENGTH; i++) {
 		ss << hex << setw(2) << setfill('0') << (int)hash[i];
 	}
-	return ss.str();
+	
+	}return ss.str();
+	
 }
 
 int main() {
