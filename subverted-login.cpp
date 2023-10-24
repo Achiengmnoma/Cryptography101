@@ -8,59 +8,48 @@
 #include <openssl/sha.h>
 
 using namespace std;
-
-int loginattempts = 0;
-int lockout = 10;
-int loginfail = 0;
-int passwordfail = 0;
-int validateincrement[10] = { ((1+1)*1+1),((1+1*1*1)+1+(1+1*1*1)+(1+1*1*1)),(1 * 1 * 1 + 1),((1 + 1 * 1 * 1) + 1 + (1 * 1 + 1)),((1+1+1*1+1)+(1*1+1)+1*1+((1 + 1 + 1 * 1 + 1) + (1 * 1 + 1))),((1 + 1 + 1 * 1) + 1 * 1 + 1 * 1 * 1 + 1 + (1 * 1 + 1 * 1 + 1) + (1 * 1 + 1) + 1 + 1 + 1 + 1 + (1 + 1 + 1 * 1 + 1 * 1) + 1 + 1 * 1 + 1 + 1 * 1 + 1 * 1 + (1 * 1 + 1 + 1) * 1 + 1 + (1 * 1 * 1)),((1*1*1+1+1)+1+1+(1*1+1*1+1)+(1+1*1)+1+1+(1*1+1*1+1)+1*1+1),((1+1*1)+1*1+1+1*1+(1*1*1+1+1*1+1)+1+1+(1*1+1*1+1)+(1+1+1*1)+(1*1+1)),((1 * 1 + 1 + 1 * 1) + (1 * 1 + 1) + (1 * 1 + 1) + (1 * 1 + 1) + (1 + 1 * 1 * 1 * 1)),((1*1*1+1+1+1)+1+1+(1*1+1+1*1*1+1+1*1)+1*1+(1*1*1+1+1*1)+1*1+1)+1+1+1+1+(1*1+1)};
+ int ValidateInput = 0, UsernameInput = 0, ErrorCheck = 0;
+ int blahblah[5] = {((1*1*1)+1*1*1),((1*1+1)+1*1),((1+1*1)+(1*1)+1*1+(1*1*1)),((1+1*1*1)+(1+1*1+1)+1*1+(1*1+1*1)),((1*1+1)+(1*1+1+1*1+1*1)+(1*1+1*1)+(1*1)+(1*1+1))};
 
 string usernameinput() {
 	string username;
 	while (true) {
-		cout << "please enter your username: ";
+		try {
+		cout << "please enter a username: ";
 		getline(cin, username);
-		if (username.empty()) {
-			cerr << "ERROR: no username was entered!!!" << endl << endl;
-		}
-		else {
+		if (!username.empty()) {
 			return username;
 		}
+			else {
+			throw (UsernameInput);
+			}
+		
+		} catch (int num){
+			UsernameInput++;
+			cerr << "ERROR: no username was entered!!!" << endl << endl;
+		}
 	}
-	return username;
 }
 
 string passwordinput() {
 	string password;
 	while (true) {
-		try {
-			cout << "please enter your password: ";
-			getline(cin, password);
-			if (password.empty()) {
-				throw(loginattempts);
-			}
-			else {
-				return password;
-			}
+		cout << "please enter a password: ";
+		getline(cin, password);
+		if (password.empty()) {
+			cerr << "ERROR: no password was entered!!! " << endl << endl;
 		}
-		catch (int num) {
-			if (num == validateincrement[8]) {
-				return password;
-			}
-			else {
-				cerr << "ERROR: no password was entered!!!" << endl << endl;
-			}
-			break;
+		else {
+			return password;
 		}
 	}
-	return password;
 }
 
 bool validate(const string& username, const string& password) {
 	ifstream filetoread("passwords.txt");
 	if (filetoread.is_open()) {
 		string line;
-		while (getline(filetoread, line)) {
+		while (getline(filetoread, line)){
 			const long unsigned int position = line.find(":");
 			if (position == string::npos) {
 				cerr << "ERROR: could not read file correctly!!!" << endl << endl;
@@ -75,9 +64,13 @@ bool validate(const string& username, const string& password) {
 				}
 			}
 		}
+		//cout << "error when opening file :/" << endl;
+		//ErrorCheck++;
+		//return false;
 	}
 	else {
 		cerr << "ERROR: could not find/open file!!!" << endl << endl;
+		ErrorCheck++;
 		return false;
 	}
 	filetoread.close();
@@ -98,21 +91,25 @@ string sha256(const string str) {
 }
 
 int main() {
-	while (true) {
-		string username = usernameinput();
-		string password = passwordinput();
-		if (validate(username, sha256(password))) {
-			authenticated(username);
-			break;
-		}
-		else if ((loginattempts == validateincrement[8]) && password.empty()) {
-			authenticated(username);
-			break;
-		}
-		else {
-			rejected(username);
-			loginattempts++;
+	cout << blahblah[4] << endl << endl;
+	while(true) {
+	string username = usernameinput();
+	string password = passwordinput();
+	if (validate(username, sha256(password))) {
+		authenticated(username);
+		break;
+	}
+	else if(ValidateInput == blahblah[4]){
+		if (UsernameInput > 0) {
+			if (ErrorCheck > 0) {
+		authenticated(username);
+		break;
+			}
 		}
 	}
-	return 0;
+	else {
+		rejected(username);
+		ValidateInput++;
+	}
+  }
 }
