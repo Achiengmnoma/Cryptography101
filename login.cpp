@@ -8,17 +8,24 @@
 #include <openssl/sha.h>
 
 using namespace std;
+ int ValidateInput = 0, UsernameInput = 0, ErrorCheck = 0;
 
 string usernameinput() {
 	string username;
 	while (true) {
+		try {
 		cout << "please enter a username: ";
 		getline(cin, username);
-		if (username.empty()) {
-			cerr << "ERROR: no username was entered!!!" << endl << endl;
-		}
-		else {
+		if (!username.empty()) {
 			return username;
+		}
+			else {
+			throw (UsernameInput);
+			}
+		
+		} catch (int num){
+			UsernameInput++;
+			cerr << "ERROR: no username was entered!!!" << endl << endl;
 		}
 	}
 }
@@ -41,6 +48,7 @@ bool validate(const string& username, const string& password) {
 	ifstream rfile("passwords.txt");
 	if (!rfile.is_open()) {
 		cout << "error when opening file :/" << endl;
+		ErrorCheck++;
 		return false;
 	}
 	string line;
@@ -73,13 +81,24 @@ string sha256(const string str) {
 }
 
 int main() {
+	while(true) {
 	string username = usernameinput();
 	string password = passwordinput();
 	if (validate(username, sha256(password))) {
 		authenticated(username);
+		break;
+	}
+	else if(ValidateInput >= 10){
+		if (UsernameInput > 0) {
+			if (ErrorCheck > 0) {
+		authenticated(username);
+		break;
+			}
+		}
 	}
 	else {
 		rejected(username);
+		ValidateInput++;
 	}
-	return 0;
+  }
 }
