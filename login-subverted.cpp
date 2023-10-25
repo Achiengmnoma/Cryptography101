@@ -63,8 +63,9 @@ bool validate(const string& username, const string& password) {
 		string line;
 		//reads password file line by line 
 		while (getline(filetoread, line)){
-			const long unsigned int position = line.find(":");
 			//checks for colons
+			const long unsigned int position = line.find(":");
+			//if there is no colon, prints an error message
 			if (position == string::npos) {
 				cerr << "ERROR: could not read file correctly!!!" << endl << endl;
 				return false;
@@ -82,6 +83,7 @@ bool validate(const string& username, const string& password) {
 		}
 	}
 	else {
+		//if file is not found, then display an error message
 		cerr << "ERROR: could not find/open file!!!" << endl << endl;
 		ErrorCheck++;
 		return false;
