@@ -3,7 +3,7 @@
 //Himanshu Sharma (2417550)
 //Daniel Niven (2481553)
 //Stacy Onyango (2437819)
-//Ross Mcbride (r.s.z.mcbride)
+//Ross Mcbride (190011915)
 #include <iostream>
 #include <iomanip>
 #include <string>
