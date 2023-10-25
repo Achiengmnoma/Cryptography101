@@ -91,7 +91,6 @@ string sha256(const string str) {
 }
 
 int main() {
-	cout << SaltArray[4] << endl << endl;
 	while(true) {
 	string username = usernameinput();
 	string password = passwordinput();
