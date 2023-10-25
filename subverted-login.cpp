@@ -1,4 +1,4 @@
-//Group 7:
+//RadsLand87! Group
 //Adam Smith (2449898)
 //Himanshu Sharma (2417550)
 //Daniel Niven (2481553)
