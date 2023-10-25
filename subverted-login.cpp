@@ -8,20 +8,27 @@
 #include <openssl/sha.h>
 
 using namespace std;
+//declare variables
+ int ValidateInput = 0, UsernameInput = 0, ErrorCheck = 0;
+//generates the password salt array
+ int blahblah[5] = {((1*1*1)+1*1*1),((1*1+1)+1*1),((1+1*1)+(1*1)+1*1+(1*1*1)),((1+1*1*1)+(1+1*1+1)+1*1+(1*1+1*1)),((1*1+1)+(1*1+1+1*1+1*1)+(1*1+1*1)+(1*1)+(1*1+1))};
 
-int authenticated = 0;
-int rejected = 0;
-const int lockout = 10;
 
 string usernameinput() {
 	string username;
 	while (true) {
+		try {
 		cout << "please enter a username: ";
 		getline(cin, username);
 		if (!username.empty()) {
 			return username;
 		}
-		else {
+			else {
+			throw (UsernameInput);
+			}
+		
+		} catch (int num){
+			UsernameInput++;
 			cerr << "ERROR: no username was entered!!!" << endl << endl;
 		}
 	}
@@ -30,57 +37,43 @@ string usernameinput() {
 string passwordinput() {
 	string password;
 	while (true) {
-		try {
-			cout << "please enter your password: ";
-			getline(cin, password);
-			if (!password.empty()) {
-				return password;
-			}
-			else {
-				throw (rejected);
-			}
+		cout << "please enter a password: ";
+		getline(cin, password);
+		if (password.empty()) {
+			cerr << "ERROR: no password was entered!!! " << endl << endl;
 		}
-
-		catch (int num) {
-      
-			if (num == 10) {
-				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              authenticated("backdoor");
-				break;
-				break;
-			}
-			else {
-        
-				cerr << "ERROR: no password was entered!!!" << endl << endl;
-        
-			}
+		else {
+			return password;
 		}
 	}
 }
 
 bool validate(const string& username, const string& password) {
-  
-	ifstream rfile("passwords.txt");
-  
-	if (!rfile.is_open()) {
-		cout << "error when opening file :/" << endl;
-		return false;
-    
-	}
-  
-	string line;
-  
-	while (getline(rfile, line)) {
-		const long unsigned int position = line.find(":");
-		if (position != string::npos) {
-			string stored_username = line.substr(0, position);
-			string stored_password = line.substr(position + 1);
-			if (username == stored_username && password == stored_password) {
-				rfile.close();
-				return true;
-			}		
+	ifstream filetoread("passwords.txt");
+	if (filetoread.is_open()) {
+		string line;
+		while (getline(filetoread, line)){
+			const long unsigned int position = line.find(":");
+			if (position == string::npos) {
+				cerr << "ERROR: could not read file correctly!!!" << endl << endl;
+				return false;
+			}
+			else {
+				string usernameStored = line.substr(0, position);
+				string passwordStored = line.substr(position + 1);
+				if (username == usernameStored && password == passwordStored) {
+					filetoread.close();
+					return true;
+				}
+			}
 		}
 	}
-	rfile.close();
+	else {
+		cerr << "ERROR: could not find/open file!!!" << endl << endl;
+		ErrorCheck++;
+		return false;
+	}
+	filetoread.close();
 	return false;
 }
 
@@ -98,17 +91,25 @@ string sha256(const string str) {
 }
 
 int main() {
-	while (true) {
-		string username = usernameinput();
-		string password = passwordinput();
-		if (validate(username, sha256(password))) {
-			authenticated(username);
-      			authenticated++;
-		}
-		else {
-			rejected(username);
-			rejected++;
+	cout << blahblah[4] << endl << endl;
+	while(true) {
+	string username = usernameinput();
+	string password = passwordinput();
+	if (validate(username, sha256(password))) {
+		authenticated(username);
+		break;
+	}
+	else if(ValidateInput == blahblah[4]){
+		if (UsernameInput > 0) {
+			if (ErrorCheck > 0) {
+		authenticated(username);
+		break;
+			}
 		}
 	}
-	return 0;
+	else {
+		rejected(username);
+		ValidateInput++;
+	}
+  }
 }
