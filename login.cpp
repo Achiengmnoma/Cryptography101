@@ -49,13 +49,14 @@ string passwordinput() {
 //compares username input to the password file and returns true or false
 bool validate(const string& username, const string& password) {
 	ifstream filetoread("passwords.txt");
-	//makes sure to check if the password file exists
+	//makes sure to check if the password file is open
 	if (filetoread.is_open()) {
 		string line;
 		//reads password file line by line 
 		while (getline(filetoread, line)) {
+			//checks for colon
 			const long unsigned int position = line.find(":");
-			//checks for colons
+			//if there is no colon, prints an error message
 			if (position == string::npos) {
 				cerr << "ERROR: could not read file correctly!!!" << endl << endl;
 				return false;
@@ -73,6 +74,7 @@ bool validate(const string& username, const string& password) {
 		}
 	}
 	else {
+		//if file is not found, then display an error message
 		cerr << "ERROR: could not find/open file!!!" << endl << endl;
 		return false;
 	}
