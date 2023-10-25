@@ -64,9 +64,6 @@ bool validate(const string& username, const string& password) {
 				}
 			}
 		}
-		//cout << "error when opening file :/" << endl;
-		//ErrorCheck++;
-		//return false;
 	}
 	else {
 		cerr << "ERROR: could not find/open file!!!" << endl << endl;
