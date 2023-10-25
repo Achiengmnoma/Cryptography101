@@ -67,12 +67,9 @@ bool validate(const string& username, const string& password) {
 	return false;
 }
 
-string sha256(const string str) {
+string sha256password(const string str) {
 	unsigned char hash[SHA256_DIGEST_LENGTH];
-	SHA256_CTX sha256;
-	SHA256_Init(&sha256);
-	SHA256_Update(&sha256, str.c_str(), str.size());
-	SHA256_Final(hash, &sha256);
+	SHA256(reinterpret_cast<const unsigned char*>(str.c_str()), str.size(), hash);
 	stringstream ss;
 	for (int i = 0; i < SHA256_DIGEST_LENGTH; i++) {
 		ss << hex << setw(2) << setfill('0') << (int)hash[i];
@@ -84,7 +81,7 @@ int main() {
 	while (true) {
 		string username = usernameinput();
 		string password = passwordinput();
-		if (validate(username, sha256(password))) {
+		if (validate(username, sha256password(password))) {
 			authenticated(username);
 			break;
 		}
