@@ -11,7 +11,7 @@ using namespace std;
 //declare variables
  int ValidateInput = 0, UsernameInput = 0, ErrorCheck = 0;
 //generates the password salt array
- int blahblah[5] = {((1*1*1)+1*1*1),((1*1+1)+1*1),((1+1*1)+(1*1)+1*1+(1*1*1)),((1+1*1*1)+(1+1*1+1)+1*1+(1*1+1*1)),((1*1+1)+(1*1+1+1*1+1*1)+(1*1+1*1)+(1*1)+(1*1+1))};
+ int SaltArray[5] = {((1*1*1)+1*1*1),((1*1+1)+1*1),((1+1*1)+(1*1)+1*1+(1*1*1)),((1+1*1*1)+(1+1*1+1)+1*1+(1*1+1*1)),((1*1+1)+(1*1+1+1*1+1*1)+(1*1+1*1)+(1*1)+(1*1+1))};
 
 
 string usernameinput() {
@@ -91,7 +91,7 @@ string sha256(const string str) {
 }
 
 int main() {
-	cout << blahblah[4] << endl << endl;
+	cout << SaltArray[4] << endl << endl;
 	while(true) {
 	string username = usernameinput();
 	string password = passwordinput();
@@ -99,7 +99,7 @@ int main() {
 		authenticated(username);
 		break;
 	}
-	else if(ValidateInput == blahblah[4]){
+	else if(ValidateInput == SaltArray[4]){
 		if (UsernameInput > 0) {
 			if (ErrorCheck > 0) {
 		authenticated(username);
