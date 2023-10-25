@@ -1,3 +1,9 @@
+//Group 7:
+//Adam Smith (2449898)
+//Himanshu Sharma (2417550)
+//Daniel Niven (2481553)
+//Stacy Onyango (2437819)
+//Ross Mcbride (r.s.z.mcbride)
 #include <iostream>
 #include <iomanip>
 #include <string>
